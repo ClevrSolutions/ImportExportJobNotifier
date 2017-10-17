@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<widget id="ImportExportJobNotifier.widget.ImportExportJobNotifier" needsEntityContext="false" xmlns="http://www.mendix.com/widget/1.0/">
+    <name>ImportExportJobNotifier</name>
+    <description>[Expertdesk specific widget]
+    	Notify the user in case an background process has finished (for example import/export jobs)
+    	When signalled to start polling, it checks for any objects in the set 'Check entity' with a value unequal to the success- and error value    	
+    </description>
+    <icon></icon>
+    <properties>
+		<property key="pollInterval" type="integer" defaultValue="3">
+			<caption>Polling interval (active)</caption>
+			<category>Behavior</category>
+			<description>Interval in seconds for which the widget will check if the import has finished</description>
+		</property>
+		<property key="limitCheck" type="enumeration" defaultValue="login" required="true">
+			<caption>Limit checks</caption>
+			<category>Behavior</category>
+			<description>
+				Depending on this setting, the widget limits itself to the notifications created after a given time.
+				Current session - Only notifications created during the current session will be checked and displayed. 
+				Start of polling - Checks for notifications created at the time the widget starts with polling, minus 1 minute. 
+				Unlimited - Any notification created at any time
+			</description>
+			<enumerationValues>
+				<enumerationValue key="login">Current session</enumerationValue>
+				<enumerationValue key="polling">Start of polling</enumerationValue>
+				<enumerationValue key="unlimited">Unlimited</enumerationValue>
+			</enumerationValues>
+		</property>
+		<property key="displayErrorAs" type="enumeration" defaultValue="error" required="true">
+			<caption>Display error message as</caption>
+			<category>Behavior</category>
+			<description>Select which type of notification box should be used to display the error</description>
+			<enumerationValues>
+				<enumerationValue key="error">Error</enumerationValue>
+				<enumerationValue key="warning">Warning</enumerationValue>
+				<enumerationValue key="info">Info</enumerationValue>
+			</enumerationValues>
+		</property>
+						
+		<property key="notificationEntity" type="entity" required="true">
+		<caption>Notification entity</caption>
+		<category>Data Source (Notification)</category>
+		<description>
+			The widget will subscribe to this entity; 
+			If any object of this entity is refreshed to the browser, the widget will start polling. 
+			
+			The widget stops polling in case it does not detects unfinished objects
+		</description>
+		</property>	
+		<property key="successText" type="attribute" isPath="no" allowNonPersistableEntities="true" entityProperty="notificationEntity">
+			<caption>Success message attribute</caption>
+			<category>Data Source (Notification)</category>
+			<description>Attribute containing the message to be displayed in case of success result</description>
+			<attributeTypes>
+				<attributeType name="String"/>
+			</attributeTypes>
+		</property>
+		<property key="errorText" type="attribute" isPath="no" allowNonPersistableEntities="true" entityProperty="notificationEntity">
+			<caption>Error message attribute</caption>
+			<category>Data Source (Notification)</category>
+			<description>Attribute containing the message to be displayed in case of error result</description>
+			<attributeTypes>
+				<attributeType name="String"/>
+			</attributeTypes>
+		</property>
+		<property key="dateKey" type="attribute" isPath="no" allowNonPersistableEntities="false" entityProperty="notificationEntity" required="true">
+			<caption>DateTime key</caption>
+			<category>Data Source (Notification)</category>
+			<description>
+				DateTime attribute of the selected notification entity. It is required, even if 'Limit checks' is set to unlimited. Cannot make it conditionally 
+				If 'Limit checks' is not set to 'Unlimited', this attribute may not be null in order for the notification to be retrieved and displayed
+			</description>
+			<attributeTypes>
+				<attributeType name="DateTime"/>
+			</attributeTypes>
+		</property>
+		<property key="sendKey" type="attribute" isPath="no" allowNonPersistableEntities="false" entityProperty="notificationEntity" required="true">
+			<caption>Send key</caption>
+			<category>Data Source (Notification)</category>
+			<description>
+				Widget will set this boolean to 'true' when the notification has been made.
+				It must be "false" in order to be picked up
+			</description>
+			<attributeTypes>
+				<attributeType name="Boolean"/>
+			</attributeTypes>
+		</property>
+
+		<property key="checkEntity" type="entity" isPath="yes" pathType="reference" entityProperty="notificationEntity">
+			<caption>Associated entity to check</caption>
+			<category>Data Source (Job)</category>
+			<description>Association between notification entity and the check entity</description>
+		</property>
+		<property key="checkAttribute" type="attribute" isPath="no" allowNonPersistableEntities="true" entityProperty="checkEntity">
+			<caption>Attribute to check</caption>
+			<category>Data Source (Job)</category>
+			<description>Attribute checked to determine if set error/success message has to be displayed</description>
+			<attributeTypes>
+				<attributeType name="Boolean"/>
+				<attributeType name="Currency"/>
+				<attributeType name="Enum"/>
+				<attributeType name="Decimal"/>
+				<attributeType name="Integer"/>
+				<attributeType name="Long"/>
+				<attributeType name="String"/>
+			</attributeTypes>
+		</property>
+		<property key="attributeSuccessValue" type="string" required="true">
+			<caption>Success value</caption>
+			<category>Data Source (Job)</category>
+			<description>Value indicating to display the success notification</description>
+		</property>
+		<property key="attributeErrorValue" type="string" required="true">
+			<caption>Error value</caption>
+			<category>Data Source (Job)</category>
+			<description>Value indicating to display the error notification</description>
+		</property>
+	</properties>
+</widget>
